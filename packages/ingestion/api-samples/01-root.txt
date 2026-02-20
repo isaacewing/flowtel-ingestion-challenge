@@ -1,0 +1,1 @@
+{"name":"DataSync Analytics API","version":"v1","endpoints":{"events":"/api/v1/events","sessions":"/api/v1/sessions","metrics":"/api/v1/metrics"},"authentication":{"method":"API Key","header":"X-API-Key"}}
