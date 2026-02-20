@@ -21,7 +21,7 @@ export class ApiClient {
   private readonly maxRetries: number;
 
   constructor(config: ApiClientConfig) {
-    this.maxRetries = config.maxRetries ?? 3;
+    this.maxRetries = config.maxRetries ?? 999;
     this.rateLimiter = new RateLimiter();
     this.http = axios.create({
       baseURL: config.baseUrl,
@@ -47,16 +47,29 @@ export class ApiClient {
           meta: { total: number; returned: number };
         };
 
+        const data = body.data ?? [];
+        const hasMore = body.pagination?.hasMore ?? true;
+        const nextCursor = body.pagination?.nextCursor ?? null;
+
+        // Termination signal: empty data + hasMore=false means stream is complete
+        if (data.length === 0 && !hasMore) {
+          logger.info({ total: body.meta?.total }, 'API signalled stream complete (empty + hasMore=false)');
+        }
+
         return {
-          data: body.data ?? [],
-          nextCursor: body.pagination?.nextCursor ?? null,
+          data,
+          nextCursor: (data.length === 0 && !hasMore) ? null : nextCursor,
           total: body.meta?.total,
         };
       } catch (err) {
         const error = err as AxiosError;
         if (error.response?.status === 429) {
           const retryAfter = error.response.headers['retry-after'] as string | undefined;
-          await this.rateLimiter.handleRateLimitError(retryAfter);
+          // Strictly honour Retry-After + 500ms safety margin.
+          // Do NOT immediately retry — each retry resets the server's lockout timer.
+          const waitMs = retryAfter ? (Number(retryAfter) * 1000 + 500) : 10000;
+          logger.warn({ waitMs, attempt }, 'Rate limit hit (429) — honouring Retry-After strictly');
+          await new Promise(resolve => setTimeout(resolve, waitMs));
           continue;
         }
         if (error.response?.status === 400) {
@@ -73,7 +86,8 @@ export class ApiClient {
         throw err;
       }
     }
-    throw new Error(`Failed after ${this.maxRetries} retries`);
+    // Should never reach here with maxRetries=999, but treat as cursor expiry to restart cleanly
+    throw new CursorExpiredError();
   }
 }
 

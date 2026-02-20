@@ -7,7 +7,7 @@ export class RateLimiter {
   private readonly limit: number;
   private readonly safetyBuffer: number;
 
-  constructor(limit = 10, safetyBuffer = 1) {
+  constructor(limit = 10, safetyBuffer = 0) {
     this.limit = limit;
     this.remaining = limit;
     this.resetAt = new Date();
@@ -28,8 +28,12 @@ export class RateLimiter {
   }
 
   async waitIfNeeded(): Promise<void> {
+    // Only pre-emptively wait if remaining is 0 AND the reset window is meaningfully in the future.
+    // If the API keeps refreshing resetAt on every response (sentinel behavior near end of dataset),
+    // cap the wait to avoid an infinite loop — the 429 handler will catch real rate limit errors.
     if (this.remaining <= this.safetyBuffer) {
-      const waitMs = Math.max(0, this.resetAt.getTime() - Date.now()) + 200;
+      const msUntilReset = this.resetAt.getTime() - Date.now();
+      const waitMs = Math.min(Math.max(0, msUntilReset) + 200, 5000); // cap at 5s
       logger.warn({ waitMs, remaining: this.remaining }, 'Rate limit approaching — waiting');
       await new Promise(resolve => setTimeout(resolve, waitMs));
     }
