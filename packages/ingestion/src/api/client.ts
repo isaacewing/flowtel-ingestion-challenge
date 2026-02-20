@@ -1,7 +1,10 @@
+import http from 'http';
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import pino from 'pino';
 import { RateLimiter } from './rateLimiter';
 import type { ApiEvent, PaginatedResponse, ApiClientConfig } from './types';
+
+const keepAliveAgent = new http.Agent({ keepAlive: true, maxSockets: 4 });
 
 const logger = pino();
 
@@ -24,6 +27,7 @@ export class ApiClient {
       baseURL: config.baseUrl,
       timeout: config.timeoutMs ?? 30000,
       headers: { 'X-API-Key': config.apiKey },
+      httpAgent: keepAliveAgent,
     });
   }
 

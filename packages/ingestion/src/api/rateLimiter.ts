@@ -7,7 +7,7 @@ export class RateLimiter {
   private readonly limit: number;
   private readonly safetyBuffer: number;
 
-  constructor(limit = 10, safetyBuffer = 2) {
+  constructor(limit = 10, safetyBuffer = 1) {
     this.limit = limit;
     this.remaining = limit;
     this.resetAt = new Date();
