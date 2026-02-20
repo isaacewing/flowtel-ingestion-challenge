@@ -1,0 +1,14 @@
+HTTP/1.1 404 Not Found
+Date: Fri, 20 Feb 2026 03:54:57 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 89
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+X-Request-ID: 70cfe02b-5ad2-478e-b935-ec781c392958
+X-RateLimit-Limit: 10
+X-RateLimit-Remaining: 2
+X-RateLimit-Reset: 20
+ETag: W/"59-ZYILeBOCEZkQ4kocEScqePqDHzo"
+
+{"error":"Not Found","message":"Event with id 'bulk' not found","code":"EVENT_NOT_FOUND"}

@@ -2,7 +2,8 @@
   "name": "@flowtel/ingestion",
   "version": "1.0.0",
   "main": "src/index.ts",
-  "scripts": {
+    "license": "naughty",
+    "scripts": {
     "start": "tsx src/index.ts",
     "verify": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",

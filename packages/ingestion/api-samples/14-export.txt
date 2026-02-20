@@ -1,0 +1,11 @@
+HTTP/1.1 404 Not Found
+Date: Fri, 20 Feb 2026 03:54:57 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 99
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+X-Request-ID: f8f5c293-e747-4768-9fa6-263b78f45cf4
+ETag: W/"63-I+G/4vC9bMmqGSu4JILNUDQtCUg"
+
+{"error":"Not Found","message":"The requested endpoint does not exist","code":"ENDPOINT_NOT_FOUND"}

@@ -1,0 +1,14 @@
+HTTP/1.1 404 Not Found
+Date: Fri, 20 Feb 2026 03:54:57 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 91
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+X-Request-ID: 3fb1c324-908a-4250-983d-cea5843510e7
+X-RateLimit-Limit: 10
+X-RateLimit-Remaining: 1
+X-RateLimit-Reset: 20
+ETag: W/"5b-nJ9rstdeekzN06tOv8JURCLnwZ0"
+
+{"error":"Not Found","message":"Event with id 'stream' not found","code":"EVENT_NOT_FOUND"}
